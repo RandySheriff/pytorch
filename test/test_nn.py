@@ -10480,7 +10480,7 @@ class TestNNDeviceType(NNTestCase):
                         # CUDA path doesn't support padding mask when the number of heads is odd
                         continue
                     input = torch.randn((B, num_heads, L, L))
-                    if (TEST_GPU and self.device_type == device_type):
+                    if (self.device_type in ["cuda", "xpu"]):
                         input = input.to(device_type)
                         mask = mask.to(device_type)
                         mask_orig = mask_orig.to(device_type)
@@ -10639,7 +10639,7 @@ class TestNNDeviceType(NNTestCase):
                 for mask_type in [1, 2]:  # 1 = BxL => src_key_padding_mask
                     input = torch.randn(shape, requires_grad=True)
                     mask = torch.randint(0, 2, shape).bool()
-                    if (TEST_GPU and self.device_type == device_type):
+                    if (self.device_type in ["cuda", "xpu"]):
                         input = input.to(device_type).detach().requires_grad_()
                         mask = mask.to(device_type)
                     self._test_masked_softmax_helper(input, dim, mask, mask_type)
@@ -10652,7 +10652,7 @@ class TestNNDeviceType(NNTestCase):
             for mask_type in [1, 2]:  # 1 = BxL => src_key_padding_mask
                 input = torch.randn((x, y), requires_grad=True)
                 mask = torch.tensor([i % 2 for i in range(y)]).expand((x, y)).bool()
-                if (TEST_GPU and self.device_type == device_type):
+                if (self.device_type in ["cuda", "xpu"]):
                     input = input.to(device_type).detach().requires_grad_()
                     mask = mask.to(device_type)
                 self._test_masked_softmax_helper(input, dim, mask, mask_type)
